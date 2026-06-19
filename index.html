@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusFlow Pro // Enterprise Cognitive Matrix Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        brandDark: '#040712',
+                        panelDark: '#090d1f',
+                        borderDark: 'rgba(255, 255, 255, 0.04)',
+                        accentBlue: '#38BDF8',
+                        accentPurple: '#6366F1',
+                        accentTeal: '#14B8A6',
+                        accentRose: '#F43F5E'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.01);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.15);
+            border-radius: 10px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.08);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.02);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .dark .glass-panel {
+            background: rgba(9, 13, 31, 0.6);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.45);
+        }
+        .glow-button {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
+            transform: translateY(-2px);
+        }
+        .perspective-1500 {
+            perspective: 1500px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        @keyframes subtleDrift {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+            50% { transform: translate(4%, 3%) scale(1.1); opacity: 0.9; }
+        }
+        @keyframes secondaryDrift {
+            0%, 100% { transform: translate(0, 0) scale(1.05); opacity: 0.6; }
+            50% { transform: translate(-3%, -4%) scale(0.95); opacity: 0.8; }
+        }
+        .bg-glow-1 {
+            animation: subtleDrift 20s infinite ease-in-out;
+        }
+        .bg-glow-2 {
+            animation: secondaryDrift 24s infinite ease-in-out;
+        }
+        @keyframes breathCycle {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(56, 189, 248, 0.2); opacity: 0.75; }
+            50% { transform: scale(1.3); box-shadow: 0 0 120px rgba(99, 102, 241, 0.6); background: rgba(99, 102, 241, 0.25); opacity: 1; }
+        }
+        .breathing-node {
+            animation: breathCycle 5s infinite ease-in-out;
+        }
+        .active-tab-nav {
+            background: #0f172a !important;
+            color: #ffffff !important;
+        }
+        .dark .active-tab-nav {
+            background: #ffffff !important;
+            color: #040712 !important;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-slate-100 to-indigo-50/40 text-slate-900 dark:from-brandDark dark:via-[#070b1a] dark:to-[#02040a] dark:text-slate-100 transition-colors duration-500 min-h-screen flex flex-col relative overflow-x-hidden custom-scrollbar">
+
+    <div class="absolute top-[-10%] left-[-15%] w-[65vw] h-[65vw] rounded-full bg-sky-400/10 dark:bg-sky-500/4 blur-[130px] pointer-events-none bg-glow-1"></div>
+    <div class="absolute bottom-[-5%] right-[-10%] w-[55vw] h-[55vw] rounded-full bg-indigo-400/10 dark:bg-indigo-500/3 blur-[140px] pointer-events-none bg-glow-2"></div>
+
+    <div id="stageBreak" class="hidden fixed inset-0 bg-[#040712]/98 backdrop-blur-3xl flex flex-col items-center justify-center z-[9999] p-8 transition-all duration-700">
+        <div class="text-center space-y-8 max-w-xl flex flex-col items-center">
+            <div class="space-y-2">
+                <h3 class="text-3xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-teal-400 to-indigo-400 uppercase font-sans">RESONANCE FULLSCREEN ENGINE</h3>
+                <p class="text-sm text-slate-400 max-w-md mx-auto mt-2 leading-relaxed">System disconnected from visual processing nodes. Calibrate internal metabolic thresholds to optimize high-velocity cognitive retention loops.</p>
+            </div>
+            
+            <div class="w-48 h-48 rounded-full bg-gradient-to-tr from-sky-400/10 to-indigo-500/20 border border-sky-400/20 flex items-center justify-center my-6 relative">
+                <div class="w-32 h-32 rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 opacity-20 blur-md absolute breathing-node"></div>
+                <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-sky-300 to-indigo-400 shadow-2xl shadow-sky-500/40 z-10"></div>
+            </div>
+
+            <div class="space-y-2 w-full text-left bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80 shadow-xl max-w-md">
+                <span class="block text-[10px] uppercase font-extrabold tracking-widest text-slate-500">Live Entrainment Wave Synthesis</span>
+                <div class="text-xs font-semibold text-slate-300 flex justify-between items-center bg-slate-950 px-4 py-3 rounded-xl border border-slate-800">
+                    <span>Active Frequency Matrix Route:</span>
+                    <span class="text-sky-400 font-bold font-mono" id="breakActiveTrackDisplay">Precipitation Array</span>
+                </div>
+            </div>
+
+            <button id="exitBreakBtn" class="text-xs font-bold uppercase tracking-wider bg-white text-brandDark border border-white px-8 py-4 rounded-xl hover:bg-slate-100 transition-all shadow-lg glow-button">Terminate Break State</button>
+        </div>
+    </div>
+
+    <div id="paywallModal" class="hidden fixed inset-0 bg-[#02040a]/80 backdrop-blur-md flex items-center justify-center z-[10000] p-4">
+        <div class="w-full max-w-md bg-white dark:bg-[#090d1f] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl p-8 text-center space-y-6 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-sky-400 via-indigo-500 to-rose-500"></div>
+            <div class="w-14 h-14 bg-rose-500/10 rounded-2xl flex items-center justify-center text-2xl mx-auto text-rose-500 border border-rose-500/20">🔒</div>
+            
+            <div class="space-y-2">
+                <h3 class="text-2xl font-extrabold tracking-tight dark:text-white">Multi-Document Pipeline Blocked</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed px-2">Sandbox users are configured for single-document analysis channels. Unlock concurrent processing, raw vector scaling, and deep matrix indexing parameters.</p>
+            </div>
+
+            <div class="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-slate-100 dark:border-slate-800 text-center">
+                <span class="text-[10px] uppercase font-extrabold text-indigo-400 block tracking-widest">FocusFlow Premium Tier</span>
+                <span class="text-4xl font-black font-mono text-slate-900 dark:text-white block mt-1">$8.99<span class="text-xs font-normal text-slate-400">/ month</span></span>
+            </div>
+
+            <div class="space-y-2.5">
+                <button onclick="alert('Subscription transaction verification simulated successfully.')" class="w-full bg-gradient-to-r from-sky-500 to-indigo-600 text-white py-4 rounded-xl font-bold text-xs uppercase tracking-wider shadow-lg hover:opacity-95 transition-all glow-button">Upgrade Core Account</button>
+                <button id="closePaywallBtn" class="w-full bg-transparent border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-50 dark:hover:bg-slate-900 transition-all">Cancel Vector Mounting</button>
+            </div>
+        </div>
+    </div>
+
+    <header class="border-b border-slate-200/70 dark:border-slate-800/50 px-8 py-4 flex justify-between items-center glass-panel sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-400 via-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                <div class="w-3 h-3 rounded-full bg-white animate-pulse"></div>
+            </div>
+            <div class="flex flex-col">
+                <span class="font-extrabold tracking-tight text-xl leading-none dark:text-white">FOCUS<span class="text-sky-500 dark:text-sky-400">FLOW</span></span>
+                <span class="text-[9px] font-mono font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mt-1">Enterprise Kernel Suite v4.26</span>
+            </div>
+            <span class="text-[9px] px-2 py-0.5 rounded-md font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">ENTERPRISE BASE</span>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <div id="systemClock" class="hidden md:block font-mono text-xs text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-900/60 border border-slate-200/40 dark:border-slate-800 px-3 py-1.5 rounded-xl">00:00:00 UTC</div>
+            <button id="themeToggle" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/80 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all shadow-sm">🌓 Toggle View Theme</button>
+            <button id="signOutBtn" class="hidden text-xs font-bold uppercase tracking-wider bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 px-3.5 py-2 rounded-xl hover:bg-rose-500/20 transition-all">Disconnect</button>
+        </div>
+    </header>
+
+    <div class="flex-1 flex w-full max-w-[1700px] mx-auto z-10 p-4 md:p-8 gap-6 items-stretch">
+        
+        <aside id="systemSidebar" class="hidden w-72 flex-shrink-0 flex flex-col gap-4">
+            <div class="bg-white/80 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800/50 glass-panel flex items-center gap-3.5">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-sky-400/20 to-indigo-500/20 border border-sky-400/30 flex items-center justify-center font-black text-base text-sky-500" id="userInitial">E</div>
+                <div class="overflow-hidden">
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate" id="sidebarUserEmail">Loading Framework Identity...</p>
+                    <p class="text-[10px] text-emerald-500 dark:text-emerald-400 font-medium flex items-center gap-1.5 mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-ping"></span> Sync Channel Secured
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white/80 dark:bg-slate-900/40 p-3 rounded-2xl border border-slate-200/60 dark:border-slate-800/50 glass-panel flex flex-col gap-1.5">
+                <button id="navWorkspace" class="w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold text-white dark:text-brandDark flex items-center gap-3 transition-all active-tab-nav">
+                    <span class="text-sm">🎛️</span> Core Console Workspace
+                </button>
+                <button id="navAnalytics" class="w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 flex items-center gap-3 transition-all">
+                    <span class="text-sm">📈</span> Diagnostic Telemetry
+                </button>
+                <button id="navAudio" class="w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 flex items-center gap-3 transition-all">
+                    <span class="text-sm">🎵</span> Audio Matrix Engine
+                </button>
+                <button id="navSettings" class="w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 flex items-center gap-3 transition-all">
+                    <span class="text-sm">⚙==</span> Environmental Config
+                </button>
+            </div>
+
+            <div class="bg-white/80 dark:bg-slate-900/40 p-5 rounded-2xl border border-slate-200/60 dark:border-slate-800/50 glass-panel flex-1 flex flex-col gap-5">
+                <h4 class="text-[10px] uppercase font-extrabold tracking-widest text-slate-400 dark:text-slate-500">System Performance Metrics</h4>
+                
+                <div class="space-y-1.5">
+                    <div class="flex justify-between text-[11px] font-bold">
+                        <span class="text-slate-500 dark:text-slate-400">Memory Sync Index</span>
+                        <span class="text-sky-500 dark:text-sky-400" id="metricSyncVal">0%</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-800/70 rounded-full overflow-hidden">
+                        <div id="metricSyncBar" class="w-0 h-full bg-gradient-to-r from-sky-400 to-indigo-50 transition-all duration-1000"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <div class="flex justify-between text-[11px] font-bold">
+                        <span class="text-slate-500 dark:text-slate-400">Cognitive Load Index</span>
+                        <span class="text-indigo-400" id="cognitiveLoadVal">Balanced Range</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-800/70 rounded-full overflow-hidden">
+                        <div id="cognitiveLoadBar" class="w-[45%] h-full bg-gradient-to-r from-indigo-400 to-purple-500 transition-all"></div>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200/50 dark:border-slate-800/60 pt-4 mt-auto space-y-3">
+                    <h5 class="text-[9px] uppercase font-extrabold tracking-widest text-slate-400 dark:text-slate-500">Static Session Counters</h5>
+                    <div class="grid grid-cols-2 gap-2 text-center">
+                        <div class="p-3 bg-slate-100/50 dark:bg-slate-800/20 rounded-xl border border-slate-200/40 dark:border-slate-800">
+                            <span class="block font-mono font-bold text-lg text-sky-500" id="statsCardCount">0</span>
+                            <span class="text-[9px] font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500 block mt-0.5">Active Nodes</span>
+                        </div>
+                        <div class="p-3 bg-slate-100/50 dark:bg-slate-800/20 rounded-xl border border-slate-200/40 dark:border-slate-800">
+                            <span class="block font-mono font-bold text-lg text-purple-400" id="statsSuccessRate">0%</span>
+                            <span class="text-[9px] font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500 block mt-0.5">Recall Accuracy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col justify-center items-center h-full">
+            
+            <section id="authSection" class="w-full max-w-md bg-white/80 dark:bg-slate-900/40 p-10 rounded-3xl border border-slate-200/80 dark:border-slate-800/60 shadow-2xl glass-panel relative">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-2xl shadow-xl flex items-center justify-center text-white text-xl font-bold">⚡</div>
+                <h2 class="text-3xl font-extrabold mb-2 tracking-tight text-center dark:text-white mt-2">Initialize FocusFlow</h2>
+                <p class="text-slate-500 dark:text-slate-400 text-xs text-center mb-8 font-medium">Mount deep-learning workflows and trace structural knowledge nodes.</p>
+                
+                <form id="authForm" class="space-y-5">
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-widest font-bold mb-2 text-slate-400 dark:text-slate-500">Security Address Profile</label>
+                        <input type="email" id="authEmail" required class="w-full px-4 py-3.5 rounded-xl bg-slate-100/70 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/40 text-sm font-medium focus:outline-none" placeholder="identity@domain.com">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-widest font-bold mb-2 text-slate-400 dark:text-slate-500">Access Key Passcode</label>
+                        <input type="password" id="authPassword" required class="w-full px-4 py-3.5 rounded-xl bg-slate-100/70 dark:bg-slate-800/50 border border-slate-200/60 dark:border-slate-700/40 text-sm font-medium focus:outline-none" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-sky-500 to-indigo-600 text-white py-4 rounded-xl font-semibold tracking-wide shadow-xl transition-all text-sm mt-4 glow-button">Open Core Console Workspace</button>
+                </form>
+                
+                <div class="relative flex py-5 items-center">
+                    <div class="flex-grow border-t border-slate-200 dark:border-slate-800/80"></div>
+                    <span class="flex-shrink mx-4 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">or entry portal</span>
+                    <div class="flex-grow border-t border-slate-200 dark:border-slate-800/80"></div>
+                </div>
+                
+                <button id="guestSignIn" class="w-full border border-slate-200 dark:border-slate-700/80 bg-white/50 dark:bg-slate-800/30 hover:bg-slate-100 dark:hover:bg-slate-800/70 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 transition-all shadow-sm">Enter Local Sandbox Environment</button>
+            </section>
+
+            <section id="workspaceSection" class="hidden w-full h-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch flex-1">
+                
+                <div id="leftControlColumn" class="lg:col-span-4 space-y-6 flex flex-col justify-start">
+                    <div class="bg-white/90 dark:bg-slate-900/40 p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800/60 glass-panel shadow-md">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></div>
+                                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">AI Synthesizer</h3>
+                            </div>
+                            <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500" id="docCountIndicator">Vector Cache: 0/1</span>
+                        </div>
+                        
+                        <form id="uploadForm" class="space-y-4">
+                            <div class="border-2 border-dashed border-slate-200 dark:border-slate-800 hover:border-sky-400 dark:hover:border-sky-500/70 rounded-xl p-8 text-center transition-all cursor-pointer bg-slate-50/50 dark:bg-slate-900/30 relative group">
+                                <input type="file" id="noteFile" accept=".txt,.pdf" class="absolute inset-0 opacity-0 cursor-pointer" required>
+                                <div class="text-3xl mb-2.5 group-hover:scale-110 transition-transform duration-300">📄</div>
+                                <span class="text-xs font-bold text-slate-700 dark:text-slate-300 block">Ingest Core Learning Assets</span>
+                                <span class="text-[10px] text-slate-400 dark:text-slate-500 block mt-1.5 leading-normal">Load native vector PDFs or clean raw text standard documents files.</span>
+                            </div>
+                            <button type="submit" id="submitAnalyzeBtn" class="w-full bg-slate-950 dark:bg-white text-white dark:text-brandDark py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all hover:opacity-90 shadow-lg flex items-center justify-center gap-2">
+                                <span>🚀</span> <span>Analyze Structural Asset Stream</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden group">
+                        <div class="absolute -right-4 -bottom-4 text-8xl opacity-10 group-hover:scale-110 transition-transform pointer-events-none duration-500">🧠</div>
+                        <h3 class="text-sm font-bold uppercase tracking-wider opacity-90 mb-1">Cognitive Fullscreen Recovery</h3>
+                        <p class="text-xs opacity-75 mb-5 leading-relaxed">Prevent information saturation blocks. Terminate active tracking layers to restructure working memory channels completely.</p>
+                        <button id="triggerBreakBtn" class="w-full bg-white text-indigo-950 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow-md hover:bg-slate-50 transition-all">Trigger Fullscreen Break State</button>
+                    </div>
+
+                    <div class="bg-white/90 dark:bg-slate-900/40 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/60 glass-panel flex-1 min-h-[160px] flex flex-col font-mono text-[10px] text-slate-400 dark:text-slate-500 space-y-1 overflow-y-auto custom-scrollbar">
+                        <span class="font-bold text-[9px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-sans mb-1.5 block">Kernel Runtime Logs</span>
+                        <div id="terminalLogOutput" class="space-y-0.5">
+                            <div>&gt; FocusFlow platform kernel runtime execution frame loaded.</div>
+                            <div>&gt; Pipeline sandboxed parameters initialized...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mainStageDisplay" class="lg:col-span-8 bg-white/90 dark:bg-slate-900/40 rounded-3xl border border-slate-200/80 dark:border-slate-800/60 glass-panel min-h-[580px] flex flex-col relative overflow-hidden shadow-2xl flex-1">
+                    
+                    <div id="stagePlaceholder" class="flex flex-col items-center justify-center text-center my-auto p-8 space-y-4">
+                        <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800/50 flex items-center justify-center text-2xl border border-slate-200/40 dark:border-slate-700/30 shadow-inner">🌌</div>
+                        <div>
+                            <p class="text-base font-bold tracking-tight text-slate-800 dark:text-slate-200">System Processing Console Vacant</p>
+                            <p class="text-xs text-slate-400 dark:text-slate-500 max-w-sm mx-auto mt-2 leading-relaxed">Please load configuration assets using the AI Synthesizer pipeline vector hub to structuralize active learning node traces.</p>
+                        </div>
+                    </div>
+
+                    <div id="stageStudy" class="hidden flex-1 flex flex-col p-8 space-y-6 overflow-y-auto custom-scrollbar max-h-[750px]">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-slate-200/60 dark:border-slate-800/80 pb-5">
+                            <div>
+                                <h3 class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Structured Matrix Layout Maps</h3>
+                                <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5 font-medium">Neural node models compiled from source infrastructure pipelines</p>
+                            </div>
+                            <div class="flex p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/40 dark:border-slate-700/40 self-start shadow-inner">
+                                <button id="showFlashcards" class="text-xs bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm font-bold px-4 py-2 rounded-lg transition-all">Flashcards Console</button>
+                                <button id="showQuizzes" class="text-xs text-slate-500 dark:text-slate-400 font-bold px-4 py-2 rounded-lg transition-all">Adaptive Exam Interface</button>
+                            </div>
+                        </div>
+
+                        <div id="flashcardContainer" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+                        
+                        <div id="quizContainer" class="hidden space-y-5"></div>
+                    </div>
+                </div>
+
+                <div id="analyticsDashboardPanel" class="hidden lg:col-span-8 bg-white/90 dark:bg-slate-900/40 rounded-3xl border border-slate-200/80 dark:border-slate-800/60 glass-panel p-8 space-y-6 flex flex-col justify-start flex-1 overflow-y-auto custom-scrollbar">
+                    <div class="border-b border-slate-200/60 dark:border-slate-800/80 pb-5">
+                        <h3 class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Diagnostic Telemetry Metrics</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-5 bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Total Request Dispatches</span>
+                            <span class="text-2xl font-mono font-black text-sky-400" id="telemetryRequests">0</span>
+                        </div>
+                        <div class="p-5 bg-white dark:bg-slate-900/50 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-1">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">Interface Manipulation Flips</span>
+                            <span class="text-2xl font-mono font-black text-indigo-400" id="telemetryFlips">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="audioMatrixPanel" class="hidden lg:col-span-8 bg-white/90 dark:bg-slate-900/40 rounded-3xl border border-slate-200/80 dark:border-slate-800/60 glass-panel p-8 space-y-6 flex flex-col justify-start flex-1">
+                    <div class="border-b border-slate-200/60 dark:border-slate-800/80 pb-5">
+                        <h3 class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Audio Wave Oscillation Rig</h3>
+                    </div>
+                    <div class="p-4 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl flex justify-between items-center">
+                        <div>
+                            <h4 class="text-xs font-bold dark:text-white">Lo-Fi Deep Focus Wave Array (432Hz)</h4>
+                            <p class="text-[10px] text-slate-400 mt-0.5">Structures alpha configurations uniformly.</p>
+                        </div>
+                        <button onclick="toggleAudioSynthesisEngine(432, 'Precipitation Array', this)" class="bg-sky-500 text-white dark:text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs uppercase tracking-wider select-none">Initialize Channel</button>
+                    </div>
+                </div>
+
+                <div id="environmentalSettingsPanel" class="hidden lg:col-span-8 bg-white/90 dark:bg-slate-900/40 rounded-3xl border border-slate-200/80 dark:border-slate-800/60 glass-panel p-8 space-y-6 flex flex-col justify-start flex-1">
+                    <div class="border-b border-slate-200/60 dark:border-slate-800/80 pb-5">
+                        <h3 class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Environmental Parameters</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold dark:text-slate-300">Glassmorphism Translucency Blur Intensity</label>
+                        <input type="range" min="8" max="48" value="24" id="configBlurSlider" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-400">
+                    </div>
+                </div>
+
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        // High-Density Knowledge Blueprint Arrays (15 Production-Grade Core Mock Nodes)
+        const enterpriseHighDensityMockDataset = {
+            flashcards: [
+                { id: 1, front: "What is the primary architectural purpose of a monolithic system vs microservices?", back: "Monolithic systems maintain single-unit compilation scopes where shared runtime memory spaces handle inter-component communication loops, eliminating network latency structures entirely." },
+                { id: 2, front: "How does the browser rendering engine calculate layout structures via the CSS Box Model?", back: "Calculates total element sizes by mapping dimensional sums across Content fields, absolute Padding rings, Border line widths, and outermost dynamic Margin boundaries." },
+                { id: 3, front: "Explain the functional difference between asynchronous Promise handling sequences.", back: "Async/Await abstracts promise chains behind step-by-step procedural syntax loops, trapping asynchronous callback executions natively inside synchronous-looking try/catch control blocks." },
+                { id: 4, front: "What is the core execution strategy behind Garbage Collection sweep cycles?", back: "Identifies system allocations lacking reference tracing paths originating from root execution stacks, pruning detached data spaces safely during low-activity CPU cycles." },
+                { id: 5, front: "Define the performance implications of CSS paint and composition layers.", back: "Layer composition transforms are computed directly inside GPU processing matrix arrays, protecting main engine threads from costly reflow calculations." },
+                { id: 6, front: "How does the RESTful interface specification enforce state neutrality parameters?", back: "Requires every payload container vector to carry full security credentials and context parameters, blocking the server from preserving session state variables." }
+            ],
+            quizzes: [
+                { id: 1, question: "Which strategy optimizes database retrieval indexing performance maps?", options: ["Clustered reference keys matching storage layouts", "Unindexed scan sweeps matching string queries", "Unordered tabular schema structures", "Sequential table array locking models"], correct: "Clustered reference keys matching storage layouts" },
+                { id: 2, question: "What structural complexity order does an optimized binary search routine map against?", options: ["O(log n) logarithmic scale parameters", "O(n^2) exponential matrix scaling loops", "O(n) linear collection sweep parameters", "O(1) absolute constant execution maps"], correct: "O(log n) logarithmic scale parameters" },
+                { id: 3, question: "What is the purpose of CORS policy constraints inside standard browsers?", options: ["To isolate access vectors targeting third-party domain endpoints", "To increase public interface compression speed ratios", "To compile standard style configurations", "To synchronize server background runtime dates"], correct: "To isolate access vectors targeting third-party domain endpoints" },
+                { id: 4, question: "How does a relational database management system enforce atomicity parameters?", options: ["Rolling back incomplete logical transaction blocks completely", "Distributing column configurations across data nodes", "Caching frequently targeted key indexes inside local memory", "Generating public verification tokens dynamically"], correct: "Rolling back incomplete logical transaction blocks completely" },
+                { id: 5, question: "What performance cost is eliminated by utilizing a Virtual DOM structure?", options: ["Direct browser layout engine reflow loops", "Network request encryption handshakes", "Local user access control file lookups", "Local script variable initialization processing"], correct: "Direct browser layout engine reflow loops" },
+                { id: 6, question: "What tracking method determines context scopes inside JavaScript environments?", options: ["Lexical parsing structures defined at generation runtime", "Dynamic memory footprint evaluations during compilation", "Asynchronous fetch intercept parameters", "Global standard browser viewport dimension maps"], correct: "Lexical parsing structures defined at generation runtime" },
+                { id: 7, question: "Which structure prevents concurrent file-write conflicts across standard networks?", options: ["Distributed transactional locking models", "Sequential string array append vectors", "Asynchronous background processing worker arrays", "Public interface data compression layers"], correct: "Distributed transactional locking models" },
+                { id: 8, question: "What design paradigm prioritizes interface adaptability across varying device displays?", options: ["Fluid grid breakpoint responsive layout structures", "Static component width compilation mappings", "Server-side device profile matching queries", "Synchronous interface scaling block masks"], correct: "Fluid grid breakpoint responsive layout structures" },
+                { id: 9, question: "What behavior characterizes idempotent API request structures?", options: ["Processing repetitive requests yields uniform backend state values", "The request increments unique data records with every trigger", "The payload container drops encryption flags automatically", "Processing delays expand exponentially with iteration metrics"], correct: "Processing repetitive requests yields uniform backend state values" },
+                { id: 10, question: "How do modern microservices manage event tracking data channels without tight coupling?", options: ["Decoupled publish-subscribe message broker pipelines", "Synchronous system-wide database transaction locks", "Shared monolithic local file storage directories", "Direct cross-network remote call execution rings"], correct: "Decoupled publish-subscribe message broker pipelines" },
+                { id: 11, question: "What primary vulnerability is blocked by enforcing prepared parameter statements in SQL arrays?", options: ["Malicious input code injection execution vectors", "Unencrypted data storage access paths", "Memory allocation boundary overflow errors", "Cross-origin resource reference data theft"], correct: "Malicious input code injection execution vectors" },
+                { id: 12, question: "What is the function of JWT authentication tracking token components?", options: ["Cryptographically verifying structural access signature states", "Compressing text stream payloads before transmission loops", "Synchronizing local data caching intervals", "Validating browser window rendering performance layers"], correct: "Cryptographically verifying structural access signature states" },
+                { id: 13, question: "What design approach ensures a platform gracefully scales past heavy request traffic spikes?", options: ["Horizontal auto-scaling load balancing infrastructure", "Increasing local hardware thread cycle speeds", "Enforcing sequential single-client processing barriers", "Minifying source asset distribution file volumes"], correct: "Horizontal auto-scaling load balancing infrastructure" },
+                { id: 14, question: "What process converts source components into single, highly optimized web files?", options: ["Static compilation module bundling pipelines", "Dynamic server-side directory translation sweeps", "Asynchronous database layout mapping tools", "Cryptographic token tracking execution frames"], correct: "Static compilation module bundling pipelines" },
+                { id: 15, question: "What metric evaluates continuous service connectivity availability tolerances?", options: ["Service Level Agreement uptime percentage matrices", "Network packet processing velocity parameters", "Processor core memory consumption index scales", "Client execution frame rate stabilization marks"], correct: "Service Level Agreement uptime percentage matrices" }
+            ]
+        };
+
+        // Persistent Session Memory Storage States
+        let uploadedDocumentLedgerCount = 0;
+        let isUserPremiumTierActive = false;
+        let activeSessionUserEmail = null;
+        let activeWebAudioContextInstance = null;
+        let activeWebAudioOscillatorNode = null;
+        
+        let systemMetricRequestCounter = 0;
+        let systemMetricInteractionFlipCounter = 0;
+        let assessmentCorrectAnswerRunningSum = 0;
+        let assessmentTotalAnsweredRunningSum = 0;
+
+        // Visual Target Elements Map Pointers
+        const authSection = document.getElementById('authSection');
+        const workspaceSection = document.getElementById('workspaceSection');
+        const authForm = document.getElementById('authForm');
+        const guestSignIn = document.getElementById('guestSignIn');
+        const themeToggle = document.getElementById('themeToggle');
+        const uploadForm = document.getElementById('uploadForm');
+        const systemSidebar = document.getElementById('systemSidebar');
+        const terminalLogOutput = document.getElementById('terminalLogOutput');
+        const paywallModal = document.getElementById('paywallModal');
+        const closePaywallBtn = document.getElementById('closePaywallBtn');
+        const docCountIndicator = document.getElementById('docCountIndicator');
+        
+        const stagePlaceholder = document.getElementById('stagePlaceholder');
+        const stageStudy = document.getElementById('stageStudy');
+        const stageBreak = document.getElementById('stageBreak');
+        const mainStageDisplay = document.getElementById('mainStageDisplay');
+        
+        const analyticsDashboardPanel = document.getElementById('analyticsDashboardPanel');
+        const audioMatrixPanel = document.getElementById('audioMatrixPanel');
+        const environmentalSettingsPanel = document.getElementById('environmentalSettingsPanel');
+        
+        const triggerBreakBtn = document.getElementById('triggerBreakBtn');
+        const exitBreakBtn = document.getElementById('exitBreakBtn');
+        const showFlashcards = document.getElementById('showFlashcards');
+        const showQuizzes = document.getElementById('showQuizzes');
+        
+        const navWorkspace = document.getElementById('navWorkspace');
+        const navAnalytics = document.getElementById('navAnalytics');
+        const navAudio = document.getElementById('navAudio');
+        const navSettings = document.getElementById('navSettings');
+        
+        const flashcardContainer = document.getElementById('flashcardContainer');
+        const quizContainer = document.getElementById('quizContainer');
+
+        // Clock Loop Runtime Function
+        function dispatchSystemClock() {
+            const clockEl = document.getElementById('systemClock');
+            setInterval(() => {
+                const now = new Date();
+                clockEl.innerText = now.toUTCString().replace('GMT', 'UTC');
+            }, 1000);
+        }
+        dispatchSystemClock();
+
+        function appendKernelLogMessage(logText) {
+            const rowLog = document.createElement('div');
+            rowLog.innerText = `> ${logText}`;
+            terminalLogOutput.appendChild(rowLog);
+            terminalLogOutput.scrollTop = terminalLogOutput.scrollHeight;
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            appendKernelLogMessage(`System visual theme toggled.`);
+        });
+
+        // Navigation Route Mapping Router Execution Engine
+        const routingButtonList = [navWorkspace, navAnalytics, navAudio, navSettings];
+        const layoutContentPanelList = [mainStageDisplay, analyticsDashboardPanel, audioMatrixPanel, environmentalSettingsPanel];
+
+        function executeRouteStateTransition(clickedNavButton, targetedContentPanel) {
+            layoutContentPanelList.forEach(panel => panel.classList.add('hidden'));
+            routingButtonList.forEach(btn => btn.className = "w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/40 flex items-center gap-3 transition-all");
+            
+            targetedContentPanel.classList.remove('hidden');
+            clickedNavButton.className = "w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold flex items-center gap-3 transition-all active-tab-nav shadow-sm";
+            appendKernelLogMessage(`Routing pipeline directed to targeted structural module component.`);
+        }
+
+        navWorkspace.addEventListener('click', () => executeRouteStateTransition(navWorkspace, mainStageDisplay));
+        navAnalytics.addEventListener('click', () => executeRouteStateTransition(navAnalytics, analyticsDashboardPanel));
+        navAudio.addEventListener('click', () => executeRouteStateTransition(navAudio, audioMatrixPanel));
+        navSettings.addEventListener('click', () => executeRouteStateTransition(navSettings, environmentalSettingsPanel));
+
+        // Identity Framework Bootstrap Handlers
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            bootstrapWorkspaceUserSession(document.getElementById('authEmail').value);
+        });
+
+        guestSignIn.addEventListener('click', () => {
+            bootstrapWorkspaceUserSession('sandbox_developer@focusflow.internal');
+        });
+
+        function bootstrapWorkspaceUserSession(emailAddressString) {
+            activeSessionUserEmail = emailAddressString;
+            authSection.classList.add('hidden');
+            workspaceSection.classList.remove('hidden');
+            systemSidebar.classList.remove('hidden');
+            document.getElementById('signOutBtn').classList.remove('hidden');
+            
+            document.getElementById('sidebarUserEmail').innerText = emailAddressString;
+            document.getElementById('userInitial').innerText = emailAddressString.charAt(0).toUpperCase();
+            appendKernelLogMessage(`Session authorization bound cleanly to user space.`);
+            
+            // Build Workspace instantly with the upgraded blueprints
+            compileWorkspaceVisualLayout(enterpriseHighDensityMockDataset);
+        }
+
+        document.getElementById('signOutBtn').addEventListener('click', () => {
+            location.reload();
+        });
+
+        document.getElementById('configBlurSlider').addEventListener('input', (e) => {
+            const blurVal = e.target.value;
+            document.querySelectorAll('.glass-panel').forEach(el => {
+                el.style.backdropFilter = `blur(${blurVal}px)`;
+                el.style.webkitBackdropFilter = `blur(${blurVal}px)`;
+            });
+        });
+
+        // Web Audio Vector Synthesis Framework Engines
+        function toggleAudioSynthesisEngine(frequencyValue, configurationLabelNameString, matchingHtmlButtonRef) {
+            if (activeWebAudioOscillatorNode) {
+                try {
+                    activeWebAudioOscillatorNode.stop();
+                    activeWebAudioOscillatorNode.disconnect();
+                } catch(e) {}
+                activeWebAudioOscillatorNode = null;
+                matchingHtmlButtonRef.innerText = "Initialize Channel";
+                appendKernelLogMessage(`Audio synthesis oscillation loop terminated.`);
+                return;
+            }
+
+            if (!activeWebAudioContextInstance) {
+                activeWebAudioContextInstance = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            const activeSystemOscillatorElement = activeWebAudioContextInstance.createOscillator();
+            const threadAudioGainNode = activeWebAudioContextInstance.createGain();
+
+            activeSystemOscillatorElement.type = 'sine';
+            activeSystemOscillatorElement.frequency.setValueAtTime(frequencyValue, activeWebAudioContextInstance.currentTime);
+            threadAudioGainNode.gain.setValueAtTime(0.05, activeWebAudioContextInstance.currentTime);
+            
+            activeSystemOscillatorElement.connect(threadAudioGainNode);
+            threadAudioGainNode.connect(activeWebAudioContextInstance.destination);
+            
+            activeSystemOscillatorElement.start();
+            activeWebAudioOscillatorNode = activeSystemOscillatorElement;
+            matchingHtmlButtonRef.innerText = "Mute Channel";
+            appendKernelLogMessage(`Synthesizing focused background wave context channels.`);
+        }
+
+        // Multi-Document Ingestion Vector Paywall Enforcement Interceptor
+        uploadForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Check Document Ledger Count for Free Tier Limit Constraints
+            if (uploadedDocumentLedgerCount >= 1 && !isUserPremiumTierActive) {
+                appendKernelLogMessage(`WARNING: Multi-document ingest request intercepted. Halting thread at subscription boundary.`);
+                paywallModal.classList.remove('hidden');
+                return;
+            }
+
+            const fileInputElement = document.getElementById('noteFile');
+            if(!fileInputElement.files.length) return;
+
+            uploadedDocumentLedgerCount++;
+            docCountIndicator.innerText = `Vector Cache: ${uploadedDocumentLedgerCount}/1`;
+            systemMetricRequestCounter++;
+            document.getElementById('telemetryRequests').innerText = systemMetricRequestCounter;
+
+            appendKernelLogMessage(`Parsing document allocation tracking streams: ${fileInputElement.files[0].name}`);
+            compileWorkspaceVisualLayout(enterpriseHighDensityMockDataset); 
+        });
+
+        closePaywallBtn.addEventListener('click', () => {
+            paywallModal.classList.add('hidden');
+            appendKernelLogMessage(`Paywall notification interface cleared. Reverting channel stack...`);
+        });
+
+        // High-Density Node Matrix Grid Interface Compilation Engines
+        function compileWorkspaceVisualLayout(workspaceDataInstance) {
+            stagePlaceholder.classList.add('hidden');
+            stageStudy.classList.remove('hidden');
+            
+            document.getElementById('statsCardCount').innerText = workspaceDataInstance.flashcards.length;
+            document.getElementById('metricSyncVal').innerText = "100%";
+
+            flashcardContainer.innerHTML = '';
+            workspaceDataInstance.flashcards.forEach(cardNode => {
+                const spatialCardOuterHousingFrame = document.createElement('div');
+                spatialCardOuterHousingFrame.className = "h-48 w-full perspective-1500 group cursor-pointer";
+                spatialCardOuterHousingFrame.innerHTML = `
+                    <div class="w-full h-full preserve-3d transition-transform duration-500 relative rounded-2xl border border-slate-200/60 dark:border-slate-800/60 shadow-sm group-hover:shadow-md inner-card-turn-rig">
+                        <div class="absolute inset-0 backface-hidden bg-white dark:bg-slate-900/50 p-6 rounded-2xl flex flex-col justify-between">
+                            <div>
+                                <span class="text-[9px] font-extrabold text-sky-500 tracking-widest uppercase block mb-1">Knowledge Node Core #${cardNode.id}</span>
+                                <p class="font-bold text-sm text-slate-800 dark:text-slate-100 leading-snug">${cardNode.front}</p>
+                            </div>
+                            <span class="text-[10px] text-slate-400 flex items-center gap-1.5 font-semibold border-t border-slate-100 dark:border-slate-800/60 pt-2.5">🔄 Tap Node to Reveal Context Mapping</span>
+                        </div>
+                        <div class="absolute inset-0 backface-hidden rotate-y-180 bg-gradient-to-br from-[#0c1226] to-[#040714] text-slate-100 p-6 rounded-2xl flex flex-col justify-between border border-slate-800">
+                            <div>
+                                <span class="text-[9px] font-extrabold text-indigo-400 tracking-widest uppercase block mb-1.5">Parsed Context Data Channel</span>
+                                <p class="text-xs font-medium text-slate-300 leading-relaxed max-h-24 overflow-y-auto custom-scrollbar">${cardNode.back}</p>
+                            </div>
+                            <span class="text-[9px] font-bold text-sky-400/90 uppercase tracking-wider bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20 self-start">Active Traced Node</span>
+                        </div>
+                    </div>
+                `;
+                spatialCardOuterHousingFrame.addEventListener('click', () => {
+                    systemMetricInteractionFlipCounter++;
+                    document.getElementById('telemetryFlips').innerText = systemMetricInteractionFlipCounter;
+                    spatialCardOuterHousingFrame.querySelector('.inner-card-turn-rig').classList.toggle('[transform:rotateY(180deg)]');
+                });
+                flashcardContainer.appendChild(spatialCardOuterHousingFrame);
+            });
+
+            quizContainer.innerHTML = '';
+            workspaceDataInstance.quizzes.forEach(quizNodeInstance => {
+                const individualQuizElementCard = document.createElement('div');
+                individualQuizElementCard.className = "p-6 bg-white dark:bg-slate-900/30 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl space-y-4 shadow-sm";
+                
+                let generationChoicesMatrixAccumulatorHtml = '';
+                quizNodeInstance.options.forEach(choiceStringText => {
+                    generationChoicesMatrixAccumulatorHtml += `
+                        <button onclick="evaluateInputSelectionChoice(this, '${choiceStringText === quizNodeInstance.correct}')" class="w-full text-left p-4 rounded-xl text-xs font-semibold bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/50 hover:border-indigo-500 hover:bg-slate-100/50 dark:hover:bg-slate-800/70 transition-all leading-normal">
+                            ${choiceStringText}
+                        </button>
+                    `;
+                });
+
+                individualQuizElementCard.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[9px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest block">Retrieval Assessment Trace Node #${quizNodeInstance.id}</span>
+                        </div>
+                        <p class="text-sm font-bold text-slate-800 dark:text-slate-100 leading-snug">${quizNodeInstance.question}</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">${generationChoicesMatrixAccumulatorHtml}</div>
+                `;
+                quizContainer.appendChild(individualQuizElementCard);
+            });
+        }
+
+        function evaluateInputSelectionChoice(targetSelectedHtmlButtonRef, evaluationTruthFlagCondition) {
+            const rowSiblingsMatrixWrapGroup = targetSelectedHtmlButtonRef.parentNode.querySelectorAll('button');
+            rowSiblingsMatrixWrapGroup.forEach(btn => {
+                btn.disabled = true; 
+                btn.className += " opacity-50 cursor-not-allowed";
+            });
+            
+            assessmentTotalAnsweredRunningSum++;
+            if(evaluationTruthFlagCondition === 'true') {
+                assessmentCorrectAnswerRunningSum++;
+                targetSelectedHtmlButtonRef.className = "w-full text-left p-4 rounded-xl text-xs bg-emerald-500/10 border-emerald-500 text-emerald-600 dark:text-emerald-400 font-black transition-all";
+                appendKernelLogMessage(`Assessment verification success.`);
+            } else {
+                targetSelectedHtmlButtonRef.className = "w-full text-left p-4 rounded-xl text-xs bg-rose-500/10 border-rose-500 text-rose-600 dark:text-rose-400 font-black transition-all";
+                appendKernelLogMessage(`Assessment validation failed.`);
+            }
+
+            const globalCalculatedScorePercentage = Math.round((assessmentCorrectAnswerRunningSum / assessmentTotalAnsweredRunningSum) * 100);
+            document.getElementById('statsSuccessRate').innerText = `${globalCalculatedScorePercentage}%`;
+        }
+
+        // Display Toggling Interfaces
+        showFlashcards.addEventListener('click', () => {
+            flashcardContainer.classList.remove('hidden');
+            quizContainer.classList.add('hidden');
+            showFlashcards.className = "text-xs bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm font-bold px-4 py-2 rounded-lg transition-all";
+            showQuizzes.className = "text-xs text-slate-500 dark:text-slate-400 font-bold px-4 py-2 rounded-lg transition-all";
+        });
+
+        showQuizzes.addEventListener('click', () => {
+            flashcardContainer.classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            showQuizzes.className = "text-xs bg-white dark:bg-slate-700 text-slate-800 dark:text-white shadow-sm font-bold px-4 py-2 rounded-lg transition-all";
+            showFlashcards.className = "text-xs text-slate-500 dark:text-slate-400 font-bold px-4 py-2 rounded-lg transition-all";
+        });
+
+        triggerBreakBtn.addEventListener('click', () => {
+            stageBreak.classList.remove('hidden');
+            appendKernelLogMessage(`Disconnecting terminal fields. Absolute Fullscreen Break active.`);
+        });
+
+        exitBreakBtn.addEventListener('click', () => {
+            stageBreak.classList.add('hidden');
+            appendKernelLogMessage(`Fullscreen Break dismissed. Re-binding console threads...`);
+        });
+    </script>
+</body>
+</html>
